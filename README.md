@@ -13,7 +13,9 @@ also kill the winmine.exe.
 ### How to Build
 Notice! Only works on MSVC!
 
-```mkdir build
+```
+mkdir build
 cd build
 cmake ..
-msbuild ALL_BUILD.vxcproj```
+msbuild ALL_BUILD.vxcproj
+```
