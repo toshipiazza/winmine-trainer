@@ -22,6 +22,7 @@ main(void)
     HMODULE hAttackerModule;
     if (!hWinMine) {
         std::cerr << "ERROR: could not initialize winmine.exe" << std::endl;
+		system("pause");
         return 1;
     }
 
@@ -46,7 +47,7 @@ main(void)
             break;
         }
 	}
-    // bad voodoo
+    // bad voodoo...
     TerminateProcess(hWinMine, 0);
     CloseHandle(hWinMine);
     return 0;
@@ -65,5 +66,6 @@ CreateWinMineProcess()
     // create winmine.exe
     CreateProcess("winmine.exe", NULL, NULL, NULL, FALSE, 0, NULL, NULL,
                   &si, &pi);
+	CloseHandle(pi.hThread);
     return pi.hProcess;
 }

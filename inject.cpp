@@ -18,11 +18,11 @@ DllInject(LPCSTR szInjectDll, HANDLE hVictim)
 
     // allocate and write name of dll into victim
     pInjectDll = VirtualAllocEx(hVictim, NULL,
-                                strlen(szInjectDll),
+                                strlen(szInjectDll) + 1,
                                 MEM_RESERVE | MEM_COMMIT,
                                 PAGE_READWRITE);
     WriteProcessMemory(hVictim, pInjectDll, szInjectDll,
-                       strlen(szInjectDll), NULL);
+                       strlen(szInjectDll) + 1, NULL);
 
     // resolve address or LoadLibraryA within victim
     // works because probably target process has same
@@ -34,15 +34,14 @@ DllInject(LPCSTR szInjectDll, HANDLE hVictim)
     hAttacker = CreateRemoteThread(hVictim, NULL, 0,
                                    (LPTHREAD_START_ROUTINE)
                                            pLoadLibrary,
-                                   pInjectDll, NULL, NULL);
+                                   pInjectDll, 0, NULL);
     if (hAttacker == NULL) {
-        std::cerr << "Remote thread could not be created" << std::endl;
+        std::cerr << "ERROR: Remote thread could not be created" << std::endl;
     } else {
-        std::cout << "Success!" << std::endl;
         WaitForSingleObject(hAttacker, INFINITE);
         CloseHandle(hAttacker);
     }
-    VirtualFreeEx(hVictim, pInjectDll, strlen(szInjectDll), MEM_DECOMMIT);
+    // VirtualFreeEx(hVictim, pInjectDll, strlen(szInjectDll), MEM_DECOMMIT);
     VirtualFreeEx(hVictim, pInjectDll, 0, MEM_RELEASE);
 
     // find the hmodule of the library we just loaded
@@ -71,11 +70,10 @@ DllFree(HMODULE szInjectDll, HANDLE hVictim)
     hAttacker = CreateRemoteThread(hVictim, NULL, 0,
                                    (LPTHREAD_START_ROUTINE)
                                            pFreeLibrary,
-                                   szInjectDll, NULL, NULL);
+                                   szInjectDll, 0, NULL);
     if (hAttacker == NULL) {
-        std::cerr << "Remote thread could not be created" << std::endl;
+        std::cerr << "ERROR: Remote thread could not be created" << std::endl;
     } else {
-        std::cout << "Success!" << std::endl;
         WaitForSingleObject(hAttacker, INFINITE);
         CloseHandle(hAttacker);
     }
