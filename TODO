@@ -1,5 +1,4 @@
 - Extract layout of tiles
-- Freeze timer
 - Render mine tiles inert
 - auto win
     - print out all tiles?
