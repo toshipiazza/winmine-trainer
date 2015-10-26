@@ -1,10 +1,10 @@
 #include <Windows.h>
 #include "common_globals.h"
 #include <sstream>
-#include <iomanip>
+#include <fstream>
 
 void
-extract_tiles_layout(std::stringstream &);
+extract_tiles_layout(std::ofstream &);
 
 BOOL WINAPI
 DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved)
@@ -12,12 +12,13 @@ DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved)
     #define UNUSED(c) (c) = (c)
     UNUSED(hinstDLL);
     UNUSED(lpvReserved);
-    std::stringstream ss;
+    std::ofstream out("layout.txt");
 
     switch (fdwReason) {
         case DLL_PROCESS_ATTACH:
-            extract_tiles_layout(ss);
-            MessageBoxA(nullptr, ss.str().c_str(), "Layout of tiles!", MB_OK);
+            extract_tiles_layout(out);
+            out.close();
+            system("notepad layout.txt");
             break;
         case DLL_PROCESS_DETACH:
         case DLL_THREAD_ATTACH:
@@ -29,7 +30,7 @@ DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved)
 }
 
 void
-extract_tiles_layout(std::stringstream &ss)
+extract_tiles_layout(std::ofstream &ss)
 {
     ss << "LEGEND:" << std::endl
        << "empty tile = 0" << std::endl
@@ -39,17 +40,9 @@ extract_tiles_layout(std::stringstream &ss)
        << "hidden bomb = *" << std::endl << std::endl;
     for (unsigned int i = 0; i < *xBoxMac; ++i) {
         for (unsigned int j = 1; j <= *yBoxMac; ++j) {
-            switch (*(tiles_on_screen + j + 0x20 * i)) {
-            case DEPRESSED: ss << "0"; break;
-            case ONE: ss << "1"; break;
-            case TWO: ss << "2"; break;
-            case THREE: ss << "3"; break;
-            case FOUR: ss << "4"; break;
-            case NORMAL: ss << "/"; break;
-            case BOMB: ss << "x"; break;
-            case RED_BOMB: ss << "X"; break;
-            case HIDDEN_BOMB: ss << "*"; break;
-            }
+            ss << visible_tile_translator[
+                    *(tiles_on_screen + j + 0x20 * i)
+                ];
         }
         ss << std::endl;
     }
