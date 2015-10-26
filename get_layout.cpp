@@ -30,5 +30,5 @@ DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved)
 void
 extract_tiles_layout(std::stringstream &ss)
 {
-    
+    ss << "Method not implemented" << std::endl;
 }

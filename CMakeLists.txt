@@ -3,6 +3,7 @@ project(msweep_trainer)
 
 find_library(PSAPI Psapi)
 
+# TODO: make work on MinGW
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
     add_definitions("-std=c++11")
 endif()

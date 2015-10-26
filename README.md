@@ -11,7 +11,7 @@ Running the commands should work as expected. Closing the console window will
 also kill the winmine.exe.
 
 ### How to Build
-Notice! Only works on MSVC for now!
+Notice! Only works on MSVC (for now)!
 
 ```
 mkdir build
