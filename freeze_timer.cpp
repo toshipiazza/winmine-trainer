@@ -1,4 +1,5 @@
 #include <Windows.h>
+#include "common_globals.h"
 
 #define UNUSED(c) (c) = (c)
 
@@ -10,7 +11,7 @@ DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved)
 
     switch (fdwReason) {
         case DLL_PROCESS_ATTACH:
-            MessageBoxA(NULL, "hello", "world", MB_OK);
+            PauseGame();
             break;
         case DLL_PROCESS_DETACH:
         case DLL_THREAD_ATTACH:

@@ -14,10 +14,14 @@ enum class visible_tiles_t {
 void (__stdcall *ShowBombs)(int) = 
     reinterpret_cast<void(__stdcall *)(int)>(0x01002F80);
 
+// case 3, freeze timer
+void(__stdcall *PauseGame)(void) =
+    reinterpret_cast<void(__stdcall *)(void)>(0x0100341C);
+
 // case 4, auto win
 int *cBombLeft = 
     reinterpret_cast<int *>(0x01005194);
-void(__stdcall *GameOver)(int) = // takes 1
+void (__stdcall *GameOver)(int) = // takes 1 or 0
     reinterpret_cast<void(__stdcall *)(int)>(0x0100347C);
 
 #endif
