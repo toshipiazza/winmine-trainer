@@ -1,5 +1,5 @@
 - Extract layout of tiles
-- Make mines visible in game
 - Freeze timer
 - Render mine tiles inert
-- Auto-win
+- auto win
+    - print out all tiles?

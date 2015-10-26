@@ -8,8 +8,8 @@ HMODULE
 DllInject(LPCSTR szInjectDll, HANDLE hVictim)
 {
     HANDLE hAttacker;
-    LPVOID pInjectDll = NULL;
-    FARPROC pLoadLibrary = NULL;
+    LPVOID pInjectDll = nullptr;
+    LPTHREAD_START_ROUTINE pLoadLibrary = nullptr;
 
     // needed to return the created hModule...
     HMODULE hVictimModules[200];
@@ -17,25 +17,23 @@ DllInject(LPCSTR szInjectDll, HANDLE hVictim)
     CHAR szVictimModuleName[MAX_PATH];
 
     // allocate and write name of dll into victim
-    pInjectDll = VirtualAllocEx(hVictim, NULL,
+    pInjectDll = VirtualAllocEx(hVictim, nullptr,
                                 strlen(szInjectDll) + 1,
                                 MEM_RESERVE | MEM_COMMIT,
                                 PAGE_READWRITE);
     WriteProcessMemory(hVictim, pInjectDll, szInjectDll,
-                       strlen(szInjectDll) + 1, NULL);
+                       strlen(szInjectDll) + 1, nullptr);
 
     // resolve address or LoadLibraryA within victim
     // works because probably target process has same
     // dll loaded in same place...
-    pLoadLibrary = (FARPROC)
+    pLoadLibrary = reinterpret_cast<LPTHREAD_START_ROUTINE>(
             GetProcAddress(GetModuleHandle("Kernel32.dll"),
-                           "LoadLibraryA");
+                           "LoadLibraryA"));
     // victimize process
-    hAttacker = CreateRemoteThread(hVictim, NULL, 0,
-                                   (LPTHREAD_START_ROUTINE)
-                                           pLoadLibrary,
-                                   pInjectDll, 0, NULL);
-    if (hAttacker == NULL) {
+    hAttacker = CreateRemoteThread(hVictim, nullptr, 0, pLoadLibrary,
+                                   pInjectDll, 0, nullptr);
+    if (hAttacker == nullptr) {
         std::cerr << "ERROR: Remote thread could not be created" << std::endl;
     } else {
         WaitForSingleObject(hAttacker, INFINITE);
@@ -54,24 +52,22 @@ DllInject(LPCSTR szInjectDll, HANDLE hVictim)
     }
     // if this happened, we didn't find the module
     // which is bad...
-    return NULL;
+    return nullptr;
 }
 
 void
 DllFree(HMODULE szInjectDll, HANDLE hVictim)
 {
     HANDLE hAttacker;
-    FARPROC pFreeLibrary = NULL;
+    LPTHREAD_START_ROUTINE pFreeLibrary = nullptr;
 
     // same as above... Kernel32.dll placement and ASLR ftw
-    pFreeLibrary = (FARPROC)
+    pFreeLibrary = reinterpret_cast<LPTHREAD_START_ROUTINE>(
             GetProcAddress(GetModuleHandle("Kernel32.dll"),
-                           "FreeLibrary");
-    hAttacker = CreateRemoteThread(hVictim, NULL, 0,
-                                   (LPTHREAD_START_ROUTINE)
-                                           pFreeLibrary,
-                                   szInjectDll, 0, NULL);
-    if (hAttacker == NULL) {
+                           "FreeLibrary"));
+    hAttacker = CreateRemoteThread(hVictim, nullptr, 0, pFreeLibrary,
+                                   szInjectDll, 0, nullptr);
+    if (hAttacker == nullptr) {
         std::cerr << "ERROR: Remote thread could not be created" << std::endl;
     } else {
         WaitForSingleObject(hAttacker, INFINITE);

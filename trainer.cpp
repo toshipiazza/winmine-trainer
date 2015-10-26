@@ -19,7 +19,7 @@ main(void)
 
     unsigned int nOpt;
     HANDLE hWinMine = CreateWinMineProcess();
-    HMODULE hAttackerModule = NULL;
+    HMODULE hAttackerModule = nullptr;
     if (!hWinMine) {
         std::cerr << "ERROR: could not initialize winmine.exe" << std::endl;
         system("pause");
@@ -41,8 +41,8 @@ main(void)
             // all the work is done in each's respective DllMain
             hAttackerModule = DllInject(jtOpt[nOpt], hWinMine);
             system("pause");
-            DllFree(hAttackerModule, hWinMine);
-            hAttackerModule = NULL;
+            if (hAttackerModule) DllFree(hAttackerModule, hWinMine);
+            hAttackerModule = nullptr;
         } else if (nOpt == 5) {
             std::cout << "Bye! <3 ~~" << std::endl;
             break;
@@ -66,7 +66,8 @@ CreateWinMineProcess()
     ZeroMemory(&pi, sizeof(pi));
 
     // create winmine.exe
-    CreateProcess("winmine.exe", NULL, NULL, NULL, FALSE, 0, NULL, NULL,
+    CreateProcess("winmine.exe", nullptr, nullptr, nullptr,
+                  FALSE, 0, nullptr, nullptr,
                   &si, &pi);
     CloseHandle(pi.hThread);
     return pi.hProcess;
