@@ -32,18 +32,20 @@ DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved)
 void
 extract_tiles_layout(std::ofstream &ss)
 {
-    ss << "LEGEND:" << std::endl
-       << "empty tile = 0" << std::endl
-       << "unpressed tile = /" << std::endl
-       << "exploded bomb = x" << std::endl
-       << "red bomb (set off) = X" << std::endl
-       << "hidden bomb = *" << std::endl << std::endl;
+    ss << "LEGEND:................." << std::endl
+       << "empty tile............ 0" << std::endl
+       << "unpressed tile........  " << std::endl
+       << "exploded bomb......... x" << std::endl
+       << "red bomb.............. X" << std::endl
+       << "hidden bomb........... *" << std::endl
+       << std::endl;
     for (unsigned int i = 0; i < *xBoxMac; ++i) {
+        ss << "|";
         for (unsigned int j = 1; j <= *yBoxMac; ++j) {
             ss << visible_tile_translator[
                     *(tiles_on_screen + j + 0x20 * i)
                 ];
         }
-        ss << std::endl;
+        ss << "|" << std::endl;
     }
 }
