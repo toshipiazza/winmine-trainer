@@ -1,16 +1,12 @@
 #ifndef COMMON_GLOBALS_H
 #define COMMON_GLOBALS_H
 
-/* see writeup for explanation
- * we stepped into the debugger and manipulated these values to find
- * the values on the tiles through an & 0x1F
- */
-char visible_tile_translator[] = {
-    '0', '1', '2', '3',
-    '4', '5', '6', '7', '8',
-    'Q', 'x', '/', 'X', 'q', 'F', '-'
-};
-unsigned int BOMB = 143;
+unsigned int IS_BOMB = 0x80;
+unsigned int NUMERIC = 0x40;
+
+unsigned int VISIBLE = 0x1F;
+unsigned int FLAGGED = 0xFE;
+unsigned int GUESSED = 0xFD;
 
 /* Type: const char tiles_on_screen[0x20][0x10]
  * Format: first/last chars on row = 0x10 (filler)

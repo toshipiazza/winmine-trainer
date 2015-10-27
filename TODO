@@ -1,5 +1,3 @@
-- get layout
-    - make work when board isn't clear
 - Render mine tiles inert
 - auto win
     - print out all tiles?
