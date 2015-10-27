@@ -1,22 +1,23 @@
 #include <Windows.h>
-#include "common_globals.h"
 #include <fstream>
-#include <iomanip>
+
+#include "common_globals.h"
 
 void
-extract_tiles_layout(std::ofstream &);
+ExtractTilesLayout(std::ofstream &);
 
 BOOL WINAPI
 DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved)
 {
-    #define UNUSED(c) (c) = (c)
+#define UNUSED(c) (c) = (c)
     UNUSED(hinstDLL);
     UNUSED(lpvReserved);
+#undef UNUSED
     std::ofstream out("layout.txt");
 
     switch (fdwReason) {
         case DLL_PROCESS_ATTACH:
-            extract_tiles_layout(out);
+            ExtractTilesLayout(out);
             out.close();
             system("notepad layout.txt");
             break;
@@ -29,38 +30,40 @@ DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved)
     return TRUE;
 }
 
-unsigned int
-get_tile(unsigned int i, unsigned int j)
+int
+GetNumberTile(unsigned int i, unsigned int j)
 {
-    return *(tiles_on_screen + j + 0x20 * i);
-}
+    int out = 0;
 
-// if there was a number, return it
-char
-get_number(unsigned int i, unsigned int j)
-{
-    char out = '0';
-    for (int _i = i - 1; _i < (int)i + 2; ++_i) {
-        for (int _j = j - 1; _j < (int)j + 2; ++_j) {
-            // make sure we're not out of bounds
-            if (!(_i == -1 || _j == 0)
-                && !(_i == *yBoxMac || _j == *xBoxMac + 1)
-                && !(_i == i && _j == j)) {
-                out += (get_tile(_i, _j) & IS_BOMB) != 0;
-            }
-        }
+#define GET_BOMB(x, y) ((GetTile((x), (y)) & IS_BOMB) != 0)
+    // check lower sides
+    if (i != 0) {
+        if (j != 1) out += GET_BOMB(i - 1, j - 1);
+        out += GET_BOMB(i - 1, j);
+        if (j != *xBoxMac + 1) out += GET_BOMB(i - 1, j + 1);
     }
+    // check left and right
+    if (j != 1) out += GET_BOMB(i, j-1);
+    if (j != *xBoxMac + 1) out += GET_BOMB(i, j + 1);
+    // check upper sides
+    if (i != *yBoxMac) {
+        if (j != 1) out += GET_BOMB(i + 1, j - 1);
+        out += GET_BOMB(i + 1, j);
+        if (j != *xBoxMac + 1) out += GET_BOMB(i + 1, j + 1);
+    }
+#undef GET_BOMB
+
     return out;
 }
 
 void
-extract_tiles_layout(std::ofstream &ss)
+ExtractTilesLayout(std::ofstream &ss)
 {
     // solve board, works even if there is garbage on the board
     for (unsigned int i = 0; i < *yBoxMac; ++i) {
         for (unsigned int j = 1; j <= *xBoxMac; ++j) {
-            if (get_tile(i, j) & IS_BOMB) ss << 'X';
-            else ss << get_number(i, j);
+            if (GetTile(i, j) & IS_BOMB) ss << 'X';
+            else ss << (char) ('0' + GetNumberTile(i, j));
         }
         ss << std::endl;
     }

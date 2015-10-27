@@ -2,12 +2,18 @@
 #include <iostream>
 #include "inject.h"
 
+#ifdef __MINGW32__
+#define PRE "lib"
+#else
+#define PRE
+#endif
+
 const char *jtOpt[] = {
-    "get_layout.dll",
-    "mines_visible.dll",
-    "freeze_timer.dll",
-    "disable_mines.dll",
-    "auto_win.dll" };
+    PRE "get_layout.dll",
+    PRE "mines_visible.dll",
+    PRE "freeze_timer.dll",
+    PRE "disable_mines.dll",
+    PRE "auto_win.dll" };
 
 HANDLE
 CreateWinMineProcess();

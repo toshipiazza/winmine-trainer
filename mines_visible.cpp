@@ -4,9 +4,10 @@
 BOOL WINAPI
 DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved)
 {
-    #define UNUSED(c) (c) = (c)
+#define UNUSED(c) (c) = (c)
     UNUSED(hinstDLL);
     UNUSED(lpvReserved);
+#undef UNUSED
 
     switch (fdwReason) {
         case DLL_PROCESS_ATTACH:
