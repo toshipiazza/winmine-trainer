@@ -1,6 +1,5 @@
 #include <Windows.h>
 #include "common_globals.h"
-#include <sstream>
 #include <fstream>
 
 void
@@ -29,23 +28,34 @@ DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved)
     return TRUE;
 }
 
+unsigned int
+get_tile(unsigned int i, unsigned int j)
+{
+    return *(tiles_on_screen + j + 0x20 * i);
+}
+
 void
 extract_tiles_layout(std::ofstream &ss)
 {
-    ss << "LEGEND:................." << std::endl
-       << "empty tile............ 0" << std::endl
-       << "unpressed tile........  " << std::endl
-       << "exploded bomb......... x" << std::endl
-       << "red bomb.............. X" << std::endl
-       << "hidden bomb........... *" << std::endl
-       << std::endl;
-    for (unsigned int i = 0; i < *xBoxMac; ++i) {
-        ss << "|";
-        for (unsigned int j = 1; j <= *yBoxMac; ++j) {
-            ss << visible_tile_translator[
-                    *(tiles_on_screen + j + 0x20 * i)
-                ];
+    // solve board
+    for (unsigned int i = 0; i < *yBoxMac; ++i) {
+        for (unsigned int j = 1; j <= *xBoxMac; ++j) {
+            if (get_tile(i, j) == BOMB)
+                ss << 'X';
+            else {
+                char out = '0';
+                for (int _i = i - 1; _i < (int) i + 2; ++_i) {
+                    for (int _j = j - 1; _j < (int) j + 2; ++_j) {
+                        if (!(_i == -1 || _j == 0)
+                            && !(_i == *yBoxMac || _j == *xBoxMac + 1)
+                            && !(_i == i && _j == j)) {
+                            out += (get_tile(_i, _j) == BOMB);
+                        }
+                    }
+                }
+                ss << out;
+            }
         }
-        ss << "|" << std::endl;
+        ss << std::endl;
     }
 }

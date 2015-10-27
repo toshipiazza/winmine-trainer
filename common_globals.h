@@ -1,12 +1,16 @@
 #ifndef COMMON_GLOBALS_H
 #define COMMON_GLOBALS_H
 
-#include <map>
-
-std::map<unsigned int, char> visible_tile_translator = {
-    { 0x40, '0' }, { 0x41, '1' }, { 0x42, '2' }, { 0x43, '3' }, { 0x44, '4' },
-    { 0x0F, ' ' }, { 138, 'x' }, { 143, '*' }, { 204, 'X' }
+/* see writeup for explanation
+ * we stepped into the debugger and manipulated these values to find
+ * the values on the tiles through an & 0x1F
+ */
+char visible_tile_translator[] = {
+    '0', '1', '2', '3',
+    '4', '5', '6', '7', '8',
+    'Q', 'x', '/', 'X', 'q', 'F', '-'
 };
+unsigned int BOMB = 143;
 
 /* Type: const char tiles_on_screen[0x20][0x10]
  * Format: first/last chars on row = 0x10 (filler)

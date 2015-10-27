@@ -1,10 +1,9 @@
 #include <Windows.h>
 
-#define UNUSED(c) (c) = (c)
-
 BOOL WINAPI
 DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved)
 {
+    #define UNUSED(c) (c) = (c)
     UNUSED(hinstDLL);
     UNUSED(lpvReserved);
 
