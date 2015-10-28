@@ -19,6 +19,7 @@ const unsigned int *yBoxMac = (unsigned int *) 0x01005338;
 
 const void(__stdcall *ShowBombs)(int) = (const void(__stdcall *)(int)) 0x01002F80;
 const void(__stdcall *PauseGame)(void) = (const void(__stdcall *)(void)) 0x0100341C;
+const void(__stdcall *StepSquare)(int,int) = (const void(__stdcall *)(int,int)) 0x01003512;
 // const void(__stdcall *GameOver)(int) = (const void(__stdcall *)(int)) 0x0100347C;
 
 inline unsigned int
