@@ -9,6 +9,7 @@ and allows you to automatically win, show layout of tiles, etc.
 Running trainer.exe opens up a console window and a winmine.exe instance.
 Running the commands should work as expected. Closing the console window will
 also kill the winmine.exe. The following operations are supported:
+
 1. Extract layout of the tiles
 2. Make the mines visible in game
 3. Freeze the timer
