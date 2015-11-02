@@ -53,6 +53,8 @@ as well as MinGW (which currently is not supported). The unimportant driver is t
 which heavily uses inject.cpp. trainer.cpp opens up a console and winmine.exe and asks
 the user for a command, and will inject the correct dll depending on the command.
 
+![pretty output! - Cmake](https://raw.githubusercontent.com/toshipiazza/winmine-trainer/master/img/cmake.png?token=AF9vVpnWtbHzQNWyHVahvBAH0wQt6K6fks5WQSS-wA%3D%3D)
+
 Each dll is written in the same format with a DllMain. These are all compiled in 32bit
 because it must match the bitwidth of the target process, winmine. Although intensive
 work should not be done in DllMain, for example calling MessageBox, since all the other
