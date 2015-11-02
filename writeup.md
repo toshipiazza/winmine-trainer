@@ -25,7 +25,7 @@ points in the program shows us that it takes on a few common traits:
   memory is being used or not. We can thus get the value of tile (i,j) with
   ```*(0x01005360 + j + 0x20 * i)```.
 * We see that all bombs, visible or invisible or flagged or whatever all have
- 0x80 set, in other words it is a flag for a tile being a bomb tile.
+  0x80 set, in other words it is a flag for a tile being a bomb tile.
 * Also, all numbers that have been revealed are flagged with 0x40
 * Tiles are all masked with 0x1F, so that these bits are not shown... as a
   result the values taken up by the tiles can be between 0 and 16, after being
@@ -40,6 +40,21 @@ based on the bits that are set on each tile.
 
 We handle disable_mines specially because there is no simple function that gives
 us this functionality (why would there be?). We instead patch some bytes at runtime.
+
+## Writing the Trainer
+The trainer was written using CMake, which automates builds for visual c++/msbuild,
+as well as MinGW (which currently is not supported). The unimportant driver is trainer.cpp
+which heavily uses inject.cpp. trainer.cpp opens up a console and winmine.exe and asks
+the user for a command, and will inject the correct dll depending on the command.
+
+Each dll is written in the same format with a DllMain. These are all compiled in 32bit
+because it must match the bitwidth of the target process, winmine. Although intensive
+work should not be done in DllMain, for example calling MessageBox, since all the other
+modules have been loaded already we don't really need to worry about doing annoying stuff
+while holding the global loader lock.
+
+Each dll essentially works the same. They all take some hardcoded values as pointers
+to variables or functions in the program and take advantage of them in some way.
 
 ## Features
 ### get_layout

@@ -28,4 +28,7 @@ mkdir build
 cd build
 cmake ..
 msbuild ALL_BUILD.vxcproj
+# NOTE: it might be necessary to copy winmine.exe into the current directory
+# of the binary (probably in the Debug folder). CMake currently fails at moving
+# winmine.exe to the current binary dir...
 ```
