@@ -21,6 +21,9 @@ ShowBombs function, and many others that there exists a common memory address
 0x01005360 which stores information on the board. Dumping its values at various
 points in the program shows us that it takes on a few common traits:
 
+* The board is a fixed size. Variables are used at runtime to keep track of what
+  memory is being used or not. We can thus get the value of tile (i,j) with
+  ```*(0x01005360 + j + 0x20 * i)```.
 * We see that all bombs, visible or invisible or flagged or whatever all have
  0x80 set, in other words it is a flag for a tile being a bomb tile.
 * Also, all numbers that have been revealed are flagged with 0x40
@@ -35,8 +38,8 @@ Finally, we later see the function StepSquare which allows us to complete both
 GetLayout and AutoWin - we can simply iterate over the board and perform operations
 based on the bits that are set on each tile.
 
-We handle disable_mines specially because there is no smple function that gives
-us this functionality (why would there be?). We instead patch some bytes at runtime :)
+We handle disable_mines specially because there is no simple function that gives
+us this functionality (why would there be?). We instead patch some bytes at runtime.
 
 ## Features
 ### get_layout
