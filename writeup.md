@@ -8,7 +8,37 @@ relevant to the task within their DllMain functions. In order to be able to
 hit each option more than once we also clean up by freeing the library we
 created in the remote thread as well.
 
-## Dll's
+## Analysis and Report
+As soon as we open up IDA, we clearly see some nice functions, namely ShowBombs
+and PauseTimer. These do as expected, either showing the locations of the bombs
+or pausing the timer if it is currently running. We also see a GameOver function
+which takes a boolean as an argument, however using this is cheating, even by
+our standards :)
+
+Although the previous two functions take care of mines_visible and free_timer,
+we still know nothing about get_layout, auto_win, etc. However, we see in the
+ShowBombs function, and many others that there exists a common memory address
+0x01005360 which stores information on the board. Dumping its values at various
+points in the program shows us that it takes on a few common traits:
+
+* We see that all bombs, visible or invisible or flagged or whatever all have
+ 0x80 set, in other words it is a flag for a tile being a bomb tile.
+* Also, all numbers that have been revealed are flagged with 0x40
+* Tiles are all masked with 0x1F, so that these bits are not shown... as a
+  result the values taken up by the tiles can be between 0 and 16, after being
+  anded with 0x1F.
+* Less important, flags have bitmask 0xFE and question marks have bitmask 0xFD
+* We can get the dimensions of the board from some variables in memory, and get
+  the bomb count at each tile from the function CountBombs.
+
+Finally, we later see the function StepSquare which allows us to complete both
+GetLayout and AutoWin - we can simply iterate over the board and perform operations
+based on the bits that are set on each tile.
+
+We handle disable_mines specially because there is no smple function that gives
+us this functionality (why would there be?). We instead patch some bytes at runtime :)
+
+## Features
 ### get_layout
   * We iterate over the board (located at address 0x01005360) and call
     winmine.exe's custom CountBombs function which gets all adjacent bombs.
